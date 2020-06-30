@@ -13,7 +13,7 @@ Not only will we launch the instances and install easytravel but we will also co
 
 ## Pre-Requisites
 Pre-Requisite | Shell Script | Postman
------------- | ------------- | ------------- | -------------
+------------ | ------------- | -------------
 AWS account. If you don't have one [get one here](https://aws.amazon.com/) | Required | Required
 AWS Access key and secret access key for an IAM user with rights ec2:RunInstances,  ec2:DescribeImages & ec2:CreateTags. | Required | Required
 [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) installed | Required | N/A
