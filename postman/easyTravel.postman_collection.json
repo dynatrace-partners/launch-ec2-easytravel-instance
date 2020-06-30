@@ -1,0 +1,316 @@
+{
+	"info": {
+		"_postman_id": "6a68c2d0-aa74-478d-bb99-a70a5115a70d",
+		"name": "easyTravel",
+		"description": "This collection will help you launch the latest version of easyTravel. It consists of 2 calls, one to get the latest Ubuntu image in your region and the second to launch an instance of that image and install easytravel.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get AWS AMI ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8b8dac92-bf90-4725-9d7b-b28290363312",
+						"exec": [
+							"//Parse the JSON response body and extract ImageId for the latest image",
+							"var jsonObject = xml2Json(pm.response.text());",
+							"var a = jsonObject.DescribeImagesResponse.imagesSet.item;",
+							"a.sort(function(a,b){",
+							"  return new Date(b.creationDate) - new Date(a.creationDate)",
+							"})",
+							"pm.environment.set(\"ImageId\", a[0].imageId)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7ca552b4-6859-43c9-a29f-807849eaa846",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "awsv4",
+					"awsv4": [
+						{
+							"key": "service",
+							"value": "ec2",
+							"type": "string"
+						},
+						{
+							"key": "region",
+							"value": "{{region}}",
+							"type": "string"
+						},
+						{
+							"key": "accessKey",
+							"value": "{{accessKeyID}}",
+							"type": "string"
+						},
+						{
+							"key": "secretKey",
+							"value": "{{secretAccessKey}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://ec2.{{region}}.amazonaws.com/?Action=DescribeImages&Filter.1.Name=is-public&Filter.1.Value.1=true&Filter.2.Name=architecture&Filter.2.Value.1=x86_64&Filter.3.Name=name&Filter.3.Value.1=ubuntu/images/hvm-ssd/ubuntu-bionic-*&Version=2016-11-15&Owner=099720109477",
+					"protocol": "https",
+					"host": [
+						"ec2",
+						"{{region}}",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "Action",
+							"value": "DescribeImages"
+						},
+						{
+							"key": "Filter.1.Name",
+							"value": "is-public"
+						},
+						{
+							"key": "Filter.1.Value.1",
+							"value": "true"
+						},
+						{
+							"key": "Filter.2.Name",
+							"value": "architecture"
+						},
+						{
+							"key": "Filter.2.Value.1",
+							"value": "x86_64"
+						},
+						{
+							"key": "Filter.3.Name",
+							"value": "name"
+						},
+						{
+							"key": "Filter.3.Value.1",
+							"value": "ubuntu/images/hvm-ssd/ubuntu-bionic-*"
+						},
+						{
+							"key": "Version",
+							"value": "2016-11-15"
+						},
+						{
+							"key": "Owner",
+							"value": "099720109477"
+						}
+					]
+				},
+				"description": "Get the AMI ID for the latest Ubuntu Image"
+			},
+			"response": []
+		},
+		{
+			"name": "Launch AWS easyTravel Instances",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6d1aaa44-e35b-4757-966f-0d8efd8a6345",
+						"exec": [
+							"//Configure the userdata Some is pre configured and already base 64 encode, the dynamic cotent is gathered and encoded by the script.",
+							"//Get the required environment variables",
+							"var dtURL = pm.environment.get('dtURL')",
+							"var paasToken = pm.environment.get('paasToken')",
+							"//This is base64 encoded commands to install and configure easyTravel",
+							"var insallET = pm.environment.get('installET')",
+							"var userData = insallET",
+							"//Optionally if you would like to auto deploy the one agent ensure to set the dtURL & paasToken environment variables and then uncommnt the next block",
+							"/*",
+							"//Configure the OneAgent download URL",
+							"var downloadOneAgent = `wget  -O Dynatrace-OneAgent.sh \\\"https://` + dtURL + `/api/v1/deployment/installer/agent/unix/default/latest?Api-Token=` + paasToken + `&arch=x86&flavor=default\\\"",
+							"`",
+							"//Configure the OneAgent installer command",
+							"var installOneAgent = `/bin/sh Dynatrace-OneAgent.sh --set-app-log-content-access=true --set-infra-only=false",
+							"`",
+							"//add the OneAgent download and install commands to userData",
+							"userData = userData + downloadOneAgent + installOneAgent",
+							"*/",
+							"",
+							"//Optionally if you would like to start easyTravel automatically uncomment the next block",
+							"/*",
+							"//This is a base64 encoded commands to start easytravel with startgroup UEM and startscenario \"Standard with REST Service and Angular2 frontend\"",
+							"var startET = `su -c 'nohup /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh --startgroup UEM --startscenario \"Standard with REST Service and Angular2 frontend\" &' - ubuntu",
+							"`",
+							"userData = userData + startET",
+							"*/",
+							"",
+							"//Optionally if you would like to autoterminate your instance after 8 hours uncomment the next block. You can also change the 8 hours to a different length.",
+							"/*",
+							"var autoTerminate = `echo \"sudo halt\" | at now + 8 hours",
+							"`",
+							"var userData = userData + autoTerminate",
+							"*/",
+							"",
+							"userData = CryptoJS.enc.Utf8.parse(userData);",
+							"userData = CryptoJS.enc.Base64.stringify(userData);",
+							"userData = base64RemovePadding(userData)",
+							"pm.environment.set(\"userData\", userData)",
+							"",
+							"//Function to remove base64 padding",
+							"function base64RemovePadding(str) {",
+							"    return str.replace(/={1,2}$/, '');",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9e8be1cb-b1e0-42eb-bf1b-a7719e394722",
+						"exec": [
+							"//Error handling for different host groups. If production then point next request back to itself. If anything else no next request is set.",
+							"var curHostgroup = pm.environment.get(\"curHostgroup\");",
+							"if (curHostgroup == \"Production\") {",
+							"    postman.setNextRequest(\"Launch AWS easyTravel Instances\");",
+							"} else {",
+							"    postman.setNextRequest(null);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "awsv4",
+					"awsv4": [
+						{
+							"key": "service",
+							"value": "ec2",
+							"type": "string"
+						},
+						{
+							"key": "region",
+							"value": "{{region}}",
+							"type": "string"
+						},
+						{
+							"key": "secretKey",
+							"value": "{{secretAccessKey}}",
+							"type": "string"
+						},
+						{
+							"key": "accessKey",
+							"value": "{{accessKeyID}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "https://ec2.{{region}}.amazonaws.com/?Action=RunInstances&ImageId={{ImageId}}&MinCount=1&MaxCount=1&InstanceType=t2.medium&UserData={{userData}}&TagSpecification.1.ResourceType=instance&TagSpecification.1.Tag.1.Key=Name&TagSpecification.1.Tag.1.Value=easyTravel&TagSpecification.2.ResourceType=volume&TagSpecification.2.Tag.1.Key=Name&TagSpecification.2.Tag.1.Value=easyTravel&InstanceInitiatedShutdownBehavior=terminate&Version=2016-11-15",
+					"protocol": "https",
+					"host": [
+						"ec2",
+						"{{region}}",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "Action",
+							"value": "RunInstances"
+						},
+						{
+							"key": "ImageId",
+							"value": "{{ImageId}}"
+						},
+						{
+							"key": "MinCount",
+							"value": "1"
+						},
+						{
+							"key": "MaxCount",
+							"value": "1"
+						},
+						{
+							"key": "InstanceType",
+							"value": "t2.medium"
+						},
+						{
+							"key": "UserData",
+							"value": "{{userData}}"
+						},
+						{
+							"key": "TagSpecification.1.ResourceType",
+							"value": "instance"
+						},
+						{
+							"key": "TagSpecification.1.Tag.1.Key",
+							"value": "Name"
+						},
+						{
+							"key": "TagSpecification.1.Tag.1.Value",
+							"value": "easyTravel"
+						},
+						{
+							"key": "TagSpecification.2.ResourceType",
+							"value": "volume"
+						},
+						{
+							"key": "TagSpecification.2.Tag.1.Key",
+							"value": "Name"
+						},
+						{
+							"key": "TagSpecification.2.Tag.1.Value",
+							"value": "easyTravel"
+						},
+						{
+							"key": "InstanceInitiatedShutdownBehavior",
+							"value": "terminate"
+						},
+						{
+							"key": "Version",
+							"value": "2016-11-15"
+						},
+						{
+							"key": "KeyName",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "SecurityGroupId",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "This will launch an ec2 instance with easyTravel  and the OneAgent installed and connected to your new tenant"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
