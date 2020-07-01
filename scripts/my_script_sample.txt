@@ -23,5 +23,6 @@ sed -i "1s/.*/&\necho \$publicDNS/" /home/ubuntu/easytravel-2.0.0-x64/runEasyTra
 sed -i "1s/.*/&\npublicDNS=\"curl http:\/\/169.254.169.254\/latest\/meta-data\/public-hostname\"/" /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh
 sed -i "1s/.*/&\necho \"determining public dns\"/" /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh
 sed -i "1s/.*/&\n/" /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh
+sed -i "s/config.baseLoadDefault=20/config.baseLoadDefault=5/" /home/ubuntu/easytravel-2.0.0-x64/resources/easyTravelConfig.properties
 sed -i "s/config.baseLoadHeadlessAngularRatio=0.0/config.baseLoadHeadlessAngularRatio=0.25/" /home/ubuntu/easytravel-2.0.0-x64/resources/easyTravelConfig.properties
 sed -i "s/config.baseLoadHeadlessMobileAngularRatio=0.0/config.baseLoadHeadlessMobileAngularRatio=0.1/" /home/ubuntu/easytravel-2.0.0-x64/resources/easyTravelConfig.properties
