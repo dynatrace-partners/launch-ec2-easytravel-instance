@@ -77,13 +77,13 @@ Configure your AWS CLI using the [`aws configure`](https://docs.aws.amazon.com/c
 Once you have installed Postman we need a couple of things
 1. Upload the <a id="raw-url" href="https://raw.githubusercontent.com/dynatrace-partners/launch-ec2-easytravel-instance/postman/easyTravel.postman_environment.json">postman environment</a> we have provided.
 
-    Inside Postman click on import, select file and upload TechLab-Managed-Cluster-Automation.postman_environment.json
+    Inside Postman click on import, select file and upload easyTravel.postman_environment.json
 
     ![](./images/preparation/postmanEnv.png)
 
 2. Upload the [<a id="raw-url" href="https://raw.githubusercontent.com/dynatrace-partners/launch-ec2-easytravel-instance/postman/easyTravel.postman_collection.json">postman collection</a> we have provided.
 
-    Repeat the same process to import TechLab-Managed-Cluster-Automation.postman_collection.json
+    Repeat the same process to import easyTravel.postman_collection.json
 
     ![](./images/preparation/postmanCollection.png)
 
@@ -91,9 +91,15 @@ Once you have installed Postman we need a couple of things
 
     * Click on the ![](./images/preparation/manageEnvironments.png) to manage your environments
 
-    * Click on the environment name easyTravel
+    * Click on the environment name `easyTravel`
 
-    * At a minimun you must set the accessKeyID & secretAccessKey environment variables to your values. Ensure to set both the initial and current values. Do not change the installET variable. Optionally you may also set your prefered region and if you want to auto-deploy the one agent you must also set dtURL & paasToken. For dtURL it should look like SaaS - \{your-environment-id\}.live.dynatrace.com or for Managed - \{your-domain\}/e/\{your-environment-id\} do not include the 'https://'. Do not touch the 'installET' variable.
+    * At a minimun you must set the accessKeyID & secretAccessKey environment variables to your values. Ensure to set both the initial and current values. 
+    
+    * <strong>Do not</strong> change the installET variable. 
+    
+    * Optionally you may also set your prefered region.
+    
+    * If you want to auto-deploy the one agent you must also set dtURL & paasToken. For dtURL it should look like SaaS - \{your-environment-id\}.live.dynatrace.com or for Managed - \{your-domain\}/e/\{your-environment-id\} do not include the 'https://'. Do not touch the 'installET' variable.
 
     ![](./images/preparation/environmentVars.png)
 
@@ -132,9 +138,9 @@ The script is made up of a number of parts. The parts are;
 2. Grant execution rights to the script by running `chmod +x launchEC2easyTravel.sh`
 3. View the contents of the script and decide if you would like to supply or enable any of the optional elements. If you do make the necessary changes.
 4. Excute the script by running `./launchEC2easyTravel.sh`
-5. Inside your AWS console check the instances have been created
+5. Inside your AWS console check the instance has been created
 
-![](./images/runinstances/runInstancesEC2.png)
+![](./images/script/scriptEC2.png)
 
 6. If you chose to deploy the OneAgent, check in dynatrace to see if your hosts are now monitored. Please note this can take 5-10 mins. 
  
@@ -161,7 +167,7 @@ Now that we have the latest Ubunntu image AMI we can launch our ec2 instances.
 
 **How do you launch an easyTravel ec2 instances via Postman?**
 
-We will leverage the aws RunInstances API call to start 2 instances of the latest Ubuntu AMI that we gathered in the previous call. This will be a blank Ubuntu image so we will leverage [AWS UserData](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html) to install and configure both easyTravel and the OneAgent. The UserData is sent as base64-encoded text and we dynamically set some values in the postman execution if you include the optional emements.
+We will leverage the aws RunInstances API call to start an instance of the latest Ubuntu AMI that we gathered in the previous call. This will be a blank Ubuntu image so we will leverage [AWS UserData](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html) to install and configure easyTravel and optionally the OneAgent. The UserData is sent as base64-encoded text and we dynamically set some values in the postman execution if you include the optional emements.
 
 ## Launching easyTravel ec2 Instance via Postman
 
@@ -188,13 +194,13 @@ The secret sauce here that you should be aware of is [AWS UserData](https://docs
 **Pre-request script**
 This is part of postman. You can use pre-request scripts in Postman to execute JavaScript before a request runs. You can find more details [here](https://learning.postman.com/docs/postman/scripts/pre-request-scripts/)
 In our case the script updates the userdata to be sent to aws including the following
-1. Updates the package lists by running apt-get update
-2. Installs the required packages
-3. Downloads and installs the latest version of easyTravel
+1. Updates the package lists by running apt-get update.
+2. Installs the required packages.
+3. Downloads and installs the latest version of easyTravel.
 4. Makes required config changes to easyTravel including API call to set correct public DNS of instance for the source of the traffic that is generated.
-5. Optional - Installs the OneAgent for your newly created environment leveraging the API token you created in exercise 5
+5. Optional - Installs the OneAgent for your newly created environment leveraging the API token you created in exercise 5.
 6. Optional - Starts the easyTravel angular app. This means you don't even need to access the environment.
-7. Optional - Auto terminates after 8 hours
+7. Optional - Auto terminates after 8 hours.
 
 **ATTENTION:** When we create these hosts they are set to auto terminate on shutdown so keep in mind the host will terminate if you shut it down.
 
@@ -209,18 +215,18 @@ To change the shutdown behaviour of an instance using the console (only after yo
 
 **Executing the Launch AWS easyTravel Instances request**
 1. Open the Launch AWS easyTravel Instances request.
-2. View the contents of Params tab. Optionally supply a key name and security group ID for your instance
+2. View the contents of Params tab. Optionally supply a key name and security group ID for your instance.
 3. View the Pre-request Script tab. Optionally uncomment any of block you wish to include. If you want to include the OneAgent deployment ensure you have set the environment variables dtURL and paasToken.
 4. Click on `Send` to execute the request.
 5. Check that the request received a `200 OK` response.
 
-![](./images/runinstances/runInstancesRespProd.png)
+![](./images/postman/runInstancesResp.png)
 
     If you get a 401 error check the value of your accessKeyID, secretAccessKey and region environment variables. Ensure both the initial and current values are set and the same. If they are verify you have added the correct roles in IAM.
 
 6. Inside your AWS console check the instance has been created
 
-![](./images/runinstances/runInstancesEC2.png)
+![](./images/postman/postmanEC2.png)
 
 7. If you chose to deploy the OneAgent, check in dynatrace to see if your hosts are now monitored. Please note this can take 5-10 mins. 
 
