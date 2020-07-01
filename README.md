@@ -75,13 +75,13 @@ Configure your AWS CLI using the [`aws configure`](https://docs.aws.amazon.com/c
 **Postman - Required for Postman**
 
 Once you have installed Postman we need a couple of things
-1. Upload the <a id="raw-url" href="https://raw.githubusercontent.com/dynatrace-partners/launch-ec2-easytravel-instance/postman/easyTravel.postman_environment.json">postman environment</a> we have provided.
+1. Upload the <a id="raw-url" href="https://raw.githubusercontent.com/dynatrace-partners/launch-ec2-easytravel-instance/master/postman/easyTravel.postman_environment.json">postman environment</a> we have provided.
 
     Inside Postman click on import, select file and upload easyTravel.postman_environment.json
 
     ![](./images/preparation/postmanEnv.png)
 
-2. Upload the [<a id="raw-url" href="https://raw.githubusercontent.com/dynatrace-partners/launch-ec2-easytravel-instance/postman/easyTravel.postman_collection.json">postman collection</a> we have provided.
+2. Upload the <a id="raw-url" href="https://raw.githubusercontent.com/dynatrace-partners/launch-ec2-easytravel-instance/master/postman/easyTravel.postman_collection.json">postman collection</a> we have provided.
 
     Repeat the same process to import easyTravel.postman_collection.json
 
