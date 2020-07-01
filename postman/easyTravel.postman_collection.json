@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6a68c2d0-aa74-478d-bb99-a70a5115a70d",
+		"_postman_id": "6fae04aa-7259-4ea5-9629-196d1cd99287",
 		"name": "easyTravel",
 		"description": "This collection will help you launch the latest version of easyTravel. It consists of 2 calls, one to get the latest Ubuntu image in your region and the second to launch an instance of that image and install easytravel.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -12,7 +12,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "8b8dac92-bf90-4725-9d7b-b28290363312",
+						"id": "18634a19-7330-41fe-8378-ed1b34a47546",
 						"exec": [
 							"//Parse the JSON response body and extract ImageId for the latest image",
 							"var jsonObject = xml2Json(pm.response.text());",
@@ -28,7 +28,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "7ca552b4-6859-43c9-a29f-807849eaa846",
+						"id": "375786c2-b4d4-4409-bbc9-60a5cc69fd0e",
 						"exec": [
 							""
 						],
@@ -128,7 +128,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "6d1aaa44-e35b-4757-966f-0d8efd8a6345",
+						"id": "2f156ab8-0943-4c0a-bbcc-ecd4cc2edc00",
 						"exec": [
 							"//Configure the userdata Some is pre configured and already base 64 encode, the dynamic cotent is gathered and encoded by the script.",
 							"//Get the required environment variables",
@@ -180,15 +180,9 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "9e8be1cb-b1e0-42eb-bf1b-a7719e394722",
+						"id": "618c1d68-2985-417d-a695-600635093382",
 						"exec": [
-							"//Error handling for different host groups. If production then point next request back to itself. If anything else no next request is set.",
-							"var curHostgroup = pm.environment.get(\"curHostgroup\");",
-							"if (curHostgroup == \"Production\") {",
-							"    postman.setNextRequest(\"Launch AWS easyTravel Instances\");",
-							"} else {",
-							"    postman.setNextRequest(null);",
-							"}"
+							""
 						],
 						"type": "text/javascript"
 					}

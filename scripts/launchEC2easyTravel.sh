@@ -16,7 +16,7 @@ ubuntu=($(aws ec2 describe-images --owners "099720109477" \
 cp my_script_sample.txt my_script.txt
 
 #set dtURL and passToken if they are set
-		if [ $dtURL != "" ]; then
+		if [ "$dtURL" != "" ]; then
 echo 'wget  -O Dynatrace-OneAgent.sh "https://'$dtURL'/api/v1/deployment/installer/agent/unix/default/latest?Api-Token='$paasToken'&arch=x86&flavor=default"' >> my_script.txt
 echo '/bin/sh Dynatrace-OneAgent.sh --set-app-log-content-access=true --set-infra-only=false --set-host-group=Production' >> my_script.txt
 		fi
@@ -29,7 +29,7 @@ echo '/bin/sh Dynatrace-OneAgent.sh --set-app-log-content-access=true --set-infr
 
 #launch ec2 instance. Optionally you might also want to provide a key name and a security group id in the following format. --key-name YourKeyName --security-group-ids sg-YourSgIdNum \ 
 #Without these you will not be able to access the host or easyTravel front end. When creating a security group the minimum requirements are inbound on 9080 & 8079 to access the easyTravel & easyTravel Angular front ends and outboun either 443 for direct OneAgent communication or 9999 via an ActiveGate.
-ec2=($(aws ec2 run-instances --image-id ami-0ede78635dadc3703 --count 1 --instance-type t2.medium \
+ec2=($(aws ec2 run-instances --image-id $ubuntu --count 1 --instance-type t2.medium \
 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=easyTravel}]' 'ResourceType=volume,Tags=[{Key=Name,Value=easyTravel}]' \
 --instance-initiated-shutdown-behavior terminate \
 --user-data file://my_script.txt))
