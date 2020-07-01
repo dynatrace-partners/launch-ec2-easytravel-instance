@@ -91,9 +91,9 @@ Once you have installed Postman we need a couple of things
 
     * Click on the ![](./images/preparation/manageEnvironments.png) to manage your environments
 
-    * Click on the environment name TechLab-Managed-Cluster-Automation
+    * Click on the environment name easyTravel
 
-    * Set the first 5 environment variables to your values. Ensure to set both the initial and current values. For dtManaged it should look like 'xxxxxx.dynatrace-managed.com' do not include the 'https://'. Do not tough the 'installET' variable.
+    * At a minimun you must set the accessKeyID & secretAccessKey environment variables to your values. Ensure to set both the initial and current values. Do not change the installET variable. Optionally you may also set your prefered region and if you want to auto-deploy the one agent you must also set dtURL & paasToken. For dtURL it should look like SaaS - \{your-environment-id\}.live.dynatrace.com or for Managed - \{your-domain\}/e/\{your-environment-id\} do not include the 'https://'. Do not touch the 'installET' variable.
 
     ![](./images/preparation/environmentVars.png)
 
