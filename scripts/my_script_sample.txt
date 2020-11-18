@@ -6,8 +6,10 @@ chown ubuntu:ubuntu easytravel-2.0.0-x64
 chown ubuntu:ubuntu dynatrace-easytravel-linux-x86_64.jar
 apt-get update
 apt -y install default-jre
+apt -y install libgtk-3-0 libxss1 
+apt -y install libasound2
+apt -y install 'libgbm-dev'
 su -c 'java -jar /home/ubuntu/easyTravel/dynatrace-easytravel-linux-x86_64.jar -y' - ubuntu
-apt-get -y install libgtk-3-0 libxss1 libasound2
 su -c 'mkdir -p /home/ubuntu/.dynaTrace/easyTravel\ 2.0.0/easyTravel/config' - ubuntu
 echo 'config.apacheFrontendPublicUrl=http://ec2-54-229-209-148.eu-west-1.compute.amazonaws.com:8079/' > /home/ubuntu/.dynaTrace/easyTravel\ 2.0.0/easyTravel/config/easyTravelLocal.properties
 export temp="config.angularFrontendPublicUrl=http://ec2-34-244-187-144.eu-west-1.compute.amazonaws.com:9080/"
