@@ -12,12 +12,16 @@ apt -y install 'libgbm-dev'
 su -c 'java -jar /home/ubuntu/easyTravel/dynatrace-easytravel-linux-x86_64.jar -y' - ubuntu
 su -c 'mkdir -p /home/ubuntu/.dynaTrace/easyTravel\ 2.0.0/easyTravel/config' - ubuntu
 echo 'config.apacheFrontendPublicUrl=http://ec2-54-229-209-148.eu-west-1.compute.amazonaws.com:8079/' > /home/ubuntu/.dynaTrace/easyTravel\ 2.0.0/easyTravel/config/easyTravelLocal.properties
-export temp="config.angularFrontendPublicUrl=http://ec2-34-244-187-144.eu-west-1.compute.amazonaws.com:9080/"
+export temp="config.angularFrontendPublicUrl=http://ec2-34-244-187-144.eu-west-1.compute.amazonaws.com:9079/"
+sed  -i "1 i\\$temp" /home/ubuntu/.dynaTrace/easyTravel\ 2.0.0/easyTravel/config/easyTravelLocal.properties
+export temp="config.nginxAngularFrontendPublicUrl=http://ec2-34-244-187-144.eu-west-1.compute.amazonaws.com:9079/"
 sed  -i "1 i\\$temp" /home/ubuntu/.dynaTrace/easyTravel\ 2.0.0/easyTravel/config/easyTravelLocal.properties
 chown ubuntu:ubuntu /home/ubuntu/.dynaTrace/easyTravel\ 2.0.0/easyTravel/config/easyTravelLocal.properties
 export temp="sed -i.bak 's/^\\\(config.angularFrontendPublicUrl=http:\\\/\\\/\\\)[^:]*\/\\\1'\$response'/' /home/ubuntu/.dynaTrace/easyTravel\\\ 2.0.0/easyTravel/config/easyTravelLocal.properties"
 sed  -i "2 i\\$temp" /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh
 export temp="sed -i.bak 's/^\\\(config.apacheFrontendPublicUrl=http:\\\/\\\/\\\)[^:]*\/\\\1'\$response'/' /home/ubuntu/.dynaTrace/easyTravel\\\ 2.0.0/easyTravel/config/easyTravelLocal.properties"
+sed  -i "2 i\\$temp" /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh
+export temp="sed -i.bak 's/^\\\(config.nginxAngularFrontendPublicUrl=http:\\\/\\\/\\\)[^:]*\/\\\1'\$response'/' /home/ubuntu/.dynaTrace/easyTravel\\\ 2.0.0/easyTravel/config/easyTravelLocal.properties"
 sed  -i "2 i\\$temp" /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh
 sed -i "1s/.*/&\necho \$response/" /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh
 sed -i "1s/.*/&\nresponse=\`\$publicDNS\`/" /home/ubuntu/easytravel-2.0.0-x64/runEasyTravelNoGUI.sh
